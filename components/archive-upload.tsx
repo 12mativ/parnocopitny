@@ -25,13 +25,19 @@ const FileUpload = () => {
     setArchive(null);
   };
 
-  function str2bytes (str: string) {
-    var bytes = new Uint8Array(str.length);
-    for (var i=0; i<str.length; i++) {
-        bytes[i] = str.charCodeAt(i);
+  function extractFilenameAndExtension(contentDisposition: string) {
+    const match = contentDisposition.match(/filename=([^;]+)$/);
+    if (match) {
+      const fullFileName = match[1];
+      const dotIndex = fullFileName.lastIndexOf('.');
+      if (dotIndex !== -1) {
+        const name = fullFileName.substring(0, dotIndex);
+        const extension = fullFileName.substring(dotIndex + 1);
+        return { name, extension };
+      }
     }
-    return bytes;
-}
+    return null;
+  }
 
   const handleSubmit = () => {
     setIsFilesClassifying(true);
@@ -40,10 +46,11 @@ const FileUpload = () => {
     formData.append("zip", archive![0]);
 
     classifyArchive(formData).then(res => {
-      let filename = res.headers['content-disposition'].split('filename=')[1].split('.')[0];
-      let extension = res.headers['content-disposition'].split('.')[1].split(';')[0];
+      console.log(res.headers['content-disposition']);
+      const filename = extractFilenameAndExtension(res.headers['content-disposition'])
+
       var blob = new Blob([res.data], {type: "application/zip"});
-      saveAs(blob, `${filename}.${extension}`); 
+      saveAs(blob, `${filename?.name}.${filename?.extension}`); 
     }).finally(() => setIsFilesClassifying(false))
   };
 
