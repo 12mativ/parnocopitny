@@ -40,7 +40,7 @@ const FileUpload = () => {
     }
   
     // Извлекаем имя файла и расширение
-    const filename = fullFileName.slice(0, dotIndex);
+    const name = fullFileName.slice(0, dotIndex);
     const extension = fullFileName.slice(dotIndex + 1);
     return { name, extension };
   }
@@ -52,8 +52,8 @@ const FileUpload = () => {
     formData.append("zip", archive![0]);
 
     classifyArchive(formData).then(res => {
-      console.log(res.headers['content-disposition']);
-      const filename = extractFilenameAndExtension(res.headers['content-disposition'])
+      console.log(res.headers);
+      const filename = extractFilenameAndExtension(res.headers['Content-Disposition'])
 
       var blob = new Blob([res.data], {type: "application/zip"});
       saveAs(blob, `${filename?.name}.${filename?.extension}`); 
