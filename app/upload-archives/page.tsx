@@ -1,17 +1,13 @@
 "use client";
 
-import ClassifiedFiles from "@/components/classified-files";
 import ArchiveUpload from "@/components/archive-upload";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function Page() {
   const [isChoosingFiles, setIsChoosingFiles] = useState(true);
-  const [classifiedFiles, setClassifiedFiles] = useState<{
-    [key: string]: string;
-  }>({});
-  const [isFilesClassifying, setIsFilesClassifying] = useState(false);
 
   return (
     <div className="flex justify-center items-center overflow-y-auto h-full p-2">
@@ -21,16 +17,15 @@ export default function Page() {
             <ArrowLeft className="w-8 h-8 rounded-full hover:bg-zinc-300 transition" />
           </Link>
         </div>
-        {isChoosingFiles ? (
-          <>
-            <p className="text-sm font-semibold text-zinc-700 w-[80%]">
-              Выберите архив с фото, который необходимо классифицировать.
-            </p>
-            <ArchiveUpload />
-          </>
-        ) : (
-          <ClassifiedFiles />
-        )}
+        <>
+          <p className="text-sm font-semibold text-zinc-700 w-[80%]">
+            Выберите архив с фото, который необходимо классифицировать.
+          </p>
+          <ArchiveUpload />
+        </>
+        <div className="w-[90px]">
+          <Image src={'/1.png'} fill alt="deer" />
+        </div>
       </div>
     </div>
   );

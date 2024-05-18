@@ -53,10 +53,11 @@ const FileUpload = () => {
 
     classifyArchive(formData).then(res => {
       console.log(res.headers);
-      const filename = extractFilenameAndExtension(res.headers['Content-Disposition'])
+      let filename = res.headers['content-disposition'].split('filename=')[1].split('.')[0];
+      let extension = res.headers['content-disposition'].split('.')[1].split(';')[0];
 
       var blob = new Blob([res.data], {type: "application/zip"});
-      saveAs(blob, `${filename?.name}.${filename?.extension}`); 
+      saveAs(blob, `${filename}.${extension}`); 
     }).finally(() => setIsFilesClassifying(false))
   };
 
