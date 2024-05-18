@@ -26,17 +26,23 @@ const FileUpload = () => {
   };
 
   function extractFilenameAndExtension(contentDisposition: string) {
-    const match = contentDisposition.match(/filename=([^;]+)$/);
-    if (match) {
-      const fullFileName = match[1];
-      const dotIndex = fullFileName.lastIndexOf('.');
-      if (dotIndex !== -1) {
-        const name = fullFileName.substring(0, dotIndex);
-        const extension = fullFileName.substring(dotIndex + 1);
-        return { name, extension };
-      }
+    // Находим индекс начала имени файла
+    const filenameIndex = contentDisposition.indexOf('filename=') + 9;
+    if (filenameIndex === -1) {
+      return null; // Если строка не соответствует ожидаемому формату
     }
-    return null;
+  
+    // Извлекаем имя файла
+    const fullFileName = contentDisposition.slice(filenameIndex).split(';')[0].trim();
+    const dotIndex = fullFileName.lastIndexOf('.');
+    if (dotIndex === -1) {
+      return null; // Если точка не найдена, имя файла не имеет расширения
+    }
+  
+    // Извлекаем имя файла и расширение
+    const filename = fullFileName.slice(0, dotIndex);
+    const extension = fullFileName.slice(dotIndex + 1);
+    return { name, extension };
   }
 
   const handleSubmit = () => {
