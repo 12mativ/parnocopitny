@@ -23,9 +23,12 @@ export default function Page() {
           </p>
           <ArchiveUpload />
         </>
-        <div className="w-[90px]">
-          <Image src={'/1.png'} fill alt="deer" />
+        <div className="flex justify-end">
+          <div className="relative w-[50px] h-[75px]">
+            <Image src={'/1.png'} fill alt="deer" />
+          </div>
         </div>
+        
       </div>
     </div>
   );

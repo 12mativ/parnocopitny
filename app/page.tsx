@@ -15,7 +15,7 @@ export default function Home() {
           SHA-256
         </p>
         <p className="text-lg md:text-xl text-center">Кейс «Классификация парнокопытных»</p>
-        <div className="flex items-center justify-center flex-col gap-y-2 md:flex-row md:gap-x-2 ">
+        <div className="flex items-center justify-center flex-col gap-y-2 md:flex-row md:gap-x-2 p-2">
           <Link href={"/upload-photos"}>
             <Button className="flex items-center gap-x-2 bg-white text-emerald-500 hover:bg-neutral-100">
               <p>Загрузить фото</p>
