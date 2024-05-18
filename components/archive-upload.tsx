@@ -40,6 +40,8 @@ const FileUpload = () => {
     formData.append("zip", archive![0]);
 
     classifyArchive(formData).then(res => {
+      console.log(res)
+      console.log(res.data)
       var blob = new Blob([str2bytes(res.data)], {type: "application/zip"});
       saveAs(blob, "data.zip"); 
     }).finally(() => setIsFilesClassifying(false))
