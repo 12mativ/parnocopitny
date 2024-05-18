@@ -25,34 +25,23 @@ const FileUpload = () => {
     setArchive(null);
   };
 
+  function str2bytes (str: string) {
+    var bytes = new Uint8Array(str.length);
+    for (var i=0; i<str.length; i++) {
+        bytes[i] = str.charCodeAt(i);
+    }
+    return bytes;
+}
+
   const handleSubmit = () => {
     setIsFilesClassifying(true);
     const formData = new FormData();
 
     formData.append("zip", archive![0]);
-    //@ts-ignore
-    classifyArchive(formData).then((response) => response.blob())
-    .then((blob) => {
-      // Create blob link to download
-      const url = window.URL.createObjectURL(
-        new Blob([blob]),
-      );
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute(
-        'download',
-        `FileName.pdf`,
-      );
-  
-      // Append to html link element page
-      document.body.appendChild(link);
-  
-      // Start download
-      link.click();
-  
-      // Clean up and remove the link
-      //@ts-ignore
-      link.parentNode.removeChild(link);
+
+    classifyArchive(formData).then(res => {
+      var blob = new Blob([str2bytes(res.data)], {type: "application/zip"});
+      saveAs(blob, "data.zip"); 
     }).finally(() => setIsFilesClassifying(false))
   };
 
