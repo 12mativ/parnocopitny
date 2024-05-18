@@ -30,13 +30,29 @@ const FileUpload = () => {
     const formData = new FormData();
 
     formData.append("zip", archive![0]);
-
-    classifyArchive(formData).then(response => {
-      var blob = new Blob([response.data], {
-        type: "application/zip;charset=utf-8",
-      });
+    //@ts-ignore
+    classifyArchive(formData).then((response) => response.blob())
+    .then((blob) => {
+      // Create blob link to download
+      const url = window.URL.createObjectURL(
+        new Blob([blob]),
+      );
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute(
+        'download',
+        `FileName.pdf`,
+      );
+  
+      // Append to html link element page
+      document.body.appendChild(link);
+  
+      // Start download
+      link.click();
+  
+      // Clean up and remove the link
       //@ts-ignore
-      saveAs(blob, `${response.fileName}.zip`);
+      link.parentNode.removeChild(link);
     }).finally(() => setIsFilesClassifying(false))
   };
 
