@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Button } from "./ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { classifyArchive } from "@/http/classifyArchive";
+import {saveAs} from "file-saver"
 
 const FileUpload = () => {
   const [archive, setArchive] = useState<File[] | null>(null);
@@ -30,14 +31,12 @@ const FileUpload = () => {
 
     formData.append("zip", archive![0]);
 
-    classifyArchive(formData).then((response) => {
+    classifyArchive(formData).then(response => {
       var blob = new Blob([response.data], {
-        type: "text/plain;charset=utf-8",
+        type: "application/zip;charset=utf-8",
       });
-      
-      const url = window.URL.createObjectURL(blob);
       //@ts-ignore
-      window.location = url;
+      saveAs(blob, `${response.fileName}.zip`);
     }).finally(() => setIsFilesClassifying(false))
   };
 
