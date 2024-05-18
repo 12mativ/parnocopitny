@@ -30,7 +30,15 @@ const FileUpload = () => {
 
     formData.append("zip", archive![0]);
 
-    classifyArchive(formData).finally(() => setIsFilesClassifying(false))
+    classifyArchive(formData).then((response) => {
+      var blob = new Blob([response.data], {
+        type: "text/plain;charset=utf-8",
+      });
+      
+      const url = window.URL.createObjectURL(blob);
+      //@ts-ignore
+      window.location = url;
+    }).finally(() => setIsFilesClassifying(false))
   };
 
   return (
