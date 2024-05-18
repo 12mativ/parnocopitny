@@ -24,7 +24,7 @@ export default function Page() {
         {isChoosingFiles ? (
           <>
             <p className="text-sm font-semibold text-zinc-700 w-[80%]">
-              Выберите архивы с фото, которые необходимо классифицировать.
+              Выберите архив с фото, который необходимо классифицировать.
             </p>
             <ArchiveUpload />
           </>

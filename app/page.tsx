@@ -12,7 +12,7 @@ export default function Home() {
         </p>
         <p className="text-xl">Кейс «Классификация парнокопытных»</p>
         <div className="flex items-center justify-center flex-col gap-y-2 md:flex-row md:gap-x-2 ">
-          <Link href={"/upload-images"}>
+          <Link href={"/upload-photos"}>
             <Button className="flex items-center gap-x-2 bg-white text-emerald-500 hover:bg-neutral-100">
               <p>Загрузить фото</p>
               <Image />
