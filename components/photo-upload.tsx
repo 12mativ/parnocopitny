@@ -1,11 +1,13 @@
 "use client";
 
-import { ChevronRight, Trash, Upload } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
+import { ChevronRight, Loader, Trash, Upload } from "lucide-react";
+import { useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { saveAs } from "file-saver";
 import { Button } from "./ui/button";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { classifyPhotos } from "@/http/classifyPhotos";
 
 const FileUpload = () => {
   const [files, setFiles] = useState<{ id: string; file: File }[]>([]);
@@ -27,13 +29,22 @@ const FileUpload = () => {
     setIsFilesClassifying(true);
     const formData = new FormData();
     files.forEach((file) => {
-      formData.append("files", file.file);
+      formData.append("images", file.file);
     });
-    //TODO create backend call in http folder
-    // classifyFiles(formData).then((res) => {
-    //   setClassifiedFiles(res.data.message);
-    // }).finally(() => setIsFilesClassifying(false));
-    // setIsChoosingFiles((prevState) => !prevState);
+    classifyPhotos(formData)
+      .then((res) => {
+        let filename = res.headers["content-disposition"]
+          .split("filename=")[1]
+          .split(".")[0];
+        let extension = res.headers["content-disposition"]
+          .split(".")[1]
+          .split(";")[0];
+
+        var blob = new Blob([res.data], { type: "application/zip" });
+        saveAs(blob, `${filename}.${extension}`);
+      })
+      .catch(err => console.log(err))
+      .finally(() => setIsFilesClassifying(false));
   };
 
   return (
@@ -42,7 +53,7 @@ const FileUpload = () => {
         <label
           className={cn(
             files.length > 0
-              ? "flex items-center justify-center gap-x-3 text-white my-3 button w-48 h-16 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-150 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400"
+              ? "flex items-center gap-x-2 bg-emerald-500 text-white hover:bg-emerald-600 p-3 rounded-lg cursor-pointer transition m-2"
               : "flex flex-col items-center jusitfy-center border-2 border-dashed p-14 shadow-lg md:hover:scale-[1.05] transition m-5 text-zinc-500 rounded-md hover:cursor-pointer "
           )}
           htmlFor="document-file"
@@ -86,8 +97,16 @@ const FileUpload = () => {
             className="flex items-center group bg-zinc-300 ml-auto text-black hover:bg-zinc-400"
             onClick={handleSubmit}
           >
-            <p>Подтвердить</p>
-            <ChevronRight className="text-zinc-500 group-hover:translate-x-1 transition" />
+            {isFilesClassifying ? (
+              <>
+                <Loader className="text-zinc-500 animate-spin" />
+              </>
+            ) : (
+              <>
+                <p>Подтвердить</p>
+                <ChevronRight className="text-zinc-500 group-hover:translate-x-1 transition" />
+              </>
+            )}
           </Button>
         </div>
       )}
